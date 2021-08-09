@@ -9,7 +9,6 @@ Citizen.CreateThread(function()
 	end
 end)
 
-local playerped = PlayerPedId()
 local checkbosmoteur = false
 
 local checkboxporteavg = false
