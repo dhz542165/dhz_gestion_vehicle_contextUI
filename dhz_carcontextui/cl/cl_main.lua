@@ -25,8 +25,6 @@ local checkboxporteargfen = false
 local checkboxporteardfen = false
 local checkboxallfen = false
 
-local PlayerPed = PlayerPedId()
-
 local MenuBase = ContextUI:CreateMenu(2, "Intéraction véhicule") 
 local Centralisation = ContextUI:CreateSubMenu(MenuBase, "Centralisation")
 local Fenetres = ContextUI:CreateSubMenu(MenuBase, "Commande centrale")
