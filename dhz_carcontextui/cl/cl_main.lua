@@ -34,56 +34,63 @@ local Fenetres = ContextUI:CreateSubMenu(MenuBase, "Commande centrale")
 
 
 ContextUI:IsVisible(MenuBase, function(Entity)
-    ContextUI:Separator("~b~Plaque", GetVehicleNumberPlateText(GetVehiclePedIsUsing(PlayerPedId())))
+    if IsPedSittingInAnyVehicle(PlayerPedId()) and GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) then 
+        ContextUI:Separator("~b~Plaque", GetVehicleNumberPlateText(GetVehiclePedIsUsing(PlayerPedId())))
 
-    ContextUI:Separator("~y~Niveau d'essence", GetVehicleFuelLevel(GetVehiclePedIsUsing(PlayerPedId())))
-    if Config.UtiliserActionMoteur then
-        if checkbosmoteur == false then
-            ContextUI:Button("~r~Couper~s~ le moteur", nil, function(Selected)
-                if (Selected) then
-                    SetVehicleEngineOn(GetVehiclePedIsUsing(PlayerPedId()), false, false, true)
-                    ESX.ShowNotification('Moteur ~g~coupé')
-                    checkbosmoteur = true
-                end
-            end)
-        else
-            ContextUI:Button("~g~Allumer~s~ le moteur", nil, function(Selected)
-                if (Selected) then
-                    SetVehicleEngineOn(GetVehiclePedIsUsing(PlayerPedId()), true, true, true)
-                    ESX.ShowNotification('Moteur ~g~allumé')
-                    checkbosmoteur = false
-                end
-            end)
+        ContextUI:Separator("~y~Niveau d'essence", GetVehicleFuelLevel(GetVehiclePedIsUsing(PlayerPedId())))
+        if Config.UtiliserActionMoteur then
+            if checkbosmoteur == false then
+                ContextUI:Button("~r~Couper~s~ le moteur", nil, function(Selected)
+                    if (Selected) then
+                        SetVehicleEngineOn(GetVehiclePedIsUsing(PlayerPedId()), false, false, true)
+                        ESX.ShowNotification('Moteur ~g~coupé')
+                        checkbosmoteur = true
+                    end
+                end)
+            else
+                ContextUI:Button("~g~Allumer~s~ le moteur", nil, function(Selected)
+                    if (Selected) then
+                        SetVehicleEngineOn(GetVehiclePedIsUsing(PlayerPedId()), true, true, true)
+                        ESX.ShowNotification('Moteur ~g~allumé')
+                        checkbosmoteur = false
+                    end
+                end)
+            end
         end
-    end
 
-    if Config.Utilisercentralisation then
-        ContextUI:Button("~p~Centralisation", nil, function(Selected)
+        if Config.Utilisercentralisation then
+            ContextUI:Button("~p~Centralisation", nil, function(Selected)
+                if (Selected) then
+                end
+            end,Centralisation)
+        end
+
+        if Config.UtiliserCommandeCentrale then
+            ContextUI:Button("~o~Système central", nil, function(Selected)
+                if (Selected) then
+                end
+            end,Fenetres)
+        end
+
+        if Config.UtiliserReparer then
+            ESX.TriggerServerCallback('dhz_carmenu:getUsergroup', function(group)
+                playergroup = group
+            end)
+            if playergroup ~= nil and (playergroup == 'mod' or playergroup == 'admin' or playergroup == 'superadmin' ) then
+                ContextUI:Button("Réparer le véhicule", nil, function(Selected)
+                    if (Selected) then
+                        local plyVeh = GetVehiclePedIsIn(PlayerPedId(), false)
+                        SetVehicleFixed(plyVeh)
+                        SetVehicleDirtLevel(plyVeh, 0.0) 
+                    end
+                end)
+            end
+        end
+    else 
+        ContextUI:Button("Vous n'êtes pas dans un véhicule", nil, function(Selected)
             if (Selected) then
             end
-        end,Centralisation)
-    end
-
-    if Config.UtiliserCommandeCentrale then
-        ContextUI:Button("~o~Système central", nil, function(Selected)
-            if (Selected) then
-            end
-        end,Fenetres)
-    end
-
-    if Config.UtiliserReparer then
-        ESX.TriggerServerCallback('dhz_carmenu:getUsergroup', function(group)
-            playergroup = group
         end)
-        if playergroup ~= nil and (playergroup == 'mod' or playergroup == 'admin' or playergroup == 'superadmin' ) then
-            ContextUI:Button("Réparer le véhicule", nil, function(Selected)
-                if (Selected) then
-                    local plyVeh = GetVehiclePedIsIn(PlayerPedId(), false)
-                    SetVehicleFixed(plyVeh)
-                    SetVehicleDirtLevel(plyVeh, 0.0) 
-                end
-            end)
-        end
     end
 end)
 
@@ -321,7 +328,5 @@ ContextUI:IsVisible(Centralisation, function(Entity)
 end)
 
 Keys.Register("LMENU", "LMENU", "Menu voiture", function()
-    if IsPedSittingInAnyVehicle(PlayerPedId()) and GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) then 
-        ContextUI.Focus = not ContextUI.Focus;
-    end
+   ContextUI.Focus = not ContextUI.Focus;
 end)
