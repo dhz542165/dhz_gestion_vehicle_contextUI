@@ -321,7 +321,7 @@ ContextUI:IsVisible(Centralisation, function(Entity)
 end)
 
 Keys.Register("LMENU", "LMENU", "Menu voiture", function()
-    if IsPedSittingInAnyVehicle(PlayerPed) and GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId() then 
+    if IsPedSittingInAnyVehicle(PlayerPedId()) and GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) then 
         ContextUI.Focus = not ContextUI.Focus;
     end
 end)
